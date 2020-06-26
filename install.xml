@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<modification>
+    <name>Random Product to Cart</name>
+    <version>1.0</version>
+    <author>Esther Palmai</author>
+    <link></link>
+	  <code>random_product_to_cart</code>
+
+    <file path="catalog/view/theme/journal2/template/journal2/headers/default.twig">
+  		<operation error="skip">
+  			<search><![CDATA[
+          {{ staticCall('Journal2Utils', 'getLogo', [config]) }}
+  			]]></search>
+        <add position="after" offset="1">
+  			<![CDATA[
+        <button id="rand_prod_btn" class="btn" onclick="add_random_product_to_cart()">
+          RANDOM PRODUCT TO CART
+        </button>
+  			]]>
+  			</add>
+  		</operation>
+    </file>
+
+    <file path="catalog/view/theme/journal2/template/common/header.twig">
+      <operation error="skip">
+        <search><![CDATA[
+        <head>
+        ]]>
+        </search>
+        <add position="after">
+        <![CDATA[
+        <style>
+          #rand_prod_btn {
+            position: relative;
+            bottom: 3rem;
+            left: 45%;
+            z-index: 1;
+            background: #673AB7;
+            box-shadow: 0px 0px 28px -3px #2a2b2e;
+            display: inline;
+          }
+
+          #rand_prod_btn:hover {
+            background: #9355ff;
+          }
+        </style>
+        ]]>
+        </add>
+      </operation>
+
+      <operation error="skip">
+        <search><![CDATA[
+        <body>
+        ]]>
+        </search>
+        <add position="after">
+        <![CDATA[
+        <script type="text/javascript">
+          function add_random_product_to_cart() {
+            $.post('index.php?route=common/header/add_random_product_to_cart')
+              .done(function(data){
+                location.reload();
+              });
+            }
+        </script>
+        ]]>
+        </add>
+      </operation>
+    </file>
+
+    <file path="catalog/controller/common/header.php">
+      <operation error="skip">
+        <search><![CDATA[
+          return $this->load->view('common/header', $data);
+        ]]>
+        </search>
+        <add position="after" offset="1">
+        <![CDATA[
+        function add_random_product_to_cart() {
+          $query = $this->db->query("SELECT product_id FROM ".DB_PREFIX."product WHERE status > 0 ORDER BY RAND() LIMIT 1");
+
+          if($query->num_rows > 0) {
+            $product_id = $query->row['product_id'];
+            $this->cart->add($product_id);
+          }
+        }
+        ]]>
+        </add>
+      </operation>
+    </file>
+
+
+    </modification>
