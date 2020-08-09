@@ -3,8 +3,7 @@
     <name>Random Product to Cart</name>
     <version>1.0</version>
     <author>Esther Palmai</author>
-    <link></link>
-	  <code>random_product_to_cart</code>
+	<code>random_product_to_cart</code>
 
     <file path="catalog/view/theme/journal2/template/common/home.twig">
   		<operation error="skip">
@@ -64,15 +63,16 @@
             $('#rand-prod-btn').append('<i class="fa fa-refresh fa-spin"></i>');
 
             let product_num = $('#product-num').val();
+            let r_url = location.origin + '/' + 'index.php?route=common/header/add_random_product_to_cart';
 
-            $.post('index.php?route=common/header/add_random_product_to_cart', {'product_num' : product_num})
+            $.post(r_url, {'product_num' : product_num})
               .done(function(data){
                 $('#rand-prod-btn').remove('i');
                 let redirect = $('#option-redirect').val();
                 if(redirect) {
                   let path = (redirect == '1' ? '/index.php?route=checkout/cart' : '/index.php?route=checkout/checkout');
-                  let url = location.protocol + '//' + location.host + path;
-                  location.assign(url);
+                  r_url = location.origin +'/' + path;
+                  location.assign(r_url);
                 } else {
                   location.reload();
                 }
